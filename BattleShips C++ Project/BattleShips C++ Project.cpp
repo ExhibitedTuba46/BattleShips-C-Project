@@ -1,13 +1,15 @@
 #include <iostream>
+#include "Grid.h"
+#include "StrikingGrid.h"
 using namespace std;
+
+StrikingGrid playerStrikingGrid;
 
 int main()
 {
-    cout << "  1 2 3 4 5 6 7 8 9 10" << endl;
-    cout << "A" << endl << "B" << endl << "C" << endl
-        << "D" << endl << "E" << endl << "F" << endl
-        << "G" << endl << "H" << endl << "I" << endl
-        << "J" << endl;
+	playerStrikingGrid.SetCell(1, 4, 1);
+	playerStrikingGrid.SetCell(5, 8, 2);
+	playerStrikingGrid.DisplayGrid();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

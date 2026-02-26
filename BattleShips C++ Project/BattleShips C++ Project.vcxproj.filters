@@ -18,12 +18,18 @@
     <ClCompile Include="BattleShips C++ Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridRow.cpp">
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrikingGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GridRow.h">
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrikingGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
