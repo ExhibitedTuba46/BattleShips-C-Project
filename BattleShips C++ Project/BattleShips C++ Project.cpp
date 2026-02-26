@@ -1,15 +1,17 @@
 #include <iostream>
 #include "Grid.h"
 #include "StrikingGrid.h"
+#include "PlacementGrid.h"
 using namespace std;
 
 StrikingGrid playerStrikingGrid;
+PlacementGrid playerPlacementGrid;
 
 int main()
 {
-	playerStrikingGrid.SetCell(1, 4, 1);
-	playerStrikingGrid.SetCell(5, 8, 2);
+	playerPlacementGrid.PlaceBattleShip(4, 5);
 	playerStrikingGrid.DisplayGrid();
+	playerPlacementGrid.DisplayGrid();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

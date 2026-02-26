@@ -125,10 +125,12 @@
   <ItemGroup>
     <ClCompile Include="BattleShips C++ Project.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="PlacementGrid.cpp" />
     <ClCompile Include="StrikingGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="PlacementGrid.h" />
     <ClInclude Include="StrikingGrid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
