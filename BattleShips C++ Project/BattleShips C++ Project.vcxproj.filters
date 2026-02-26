@@ -18,5 +18,13 @@
     <ClCompile Include="BattleShips C++ Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GridRow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GridRow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

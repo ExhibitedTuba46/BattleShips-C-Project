@@ -1,11 +1,13 @@
-// BattleShips C++ Project.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    cout << "  1 2 3 4 5 6 7 8 9 10" << endl;
+    cout << "A" << endl << "B" << endl << "C" << endl
+        << "D" << endl << "E" << endl << "F" << endl
+        << "G" << endl << "H" << endl << "I" << endl
+        << "J" << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
