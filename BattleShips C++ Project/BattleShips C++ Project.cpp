@@ -9,9 +9,7 @@ PlacementGrid playerPlacementGrid;
 
 int main()
 {
-	playerPlacementGrid.PlaceBattleShip(4, 5);
-	playerStrikingGrid.DisplayGrid();
-	playerPlacementGrid.DisplayGrid();
+	playerPlacementGrid.QueryBattleShipInput();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
