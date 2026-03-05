@@ -2,6 +2,7 @@
 
 #include "PlacementGrid.h"
 #include "Grid.h"
+#include "BattleShip.h"
 #include <iostream>
 #include <windows.h>
 using namespace std;
@@ -21,16 +22,16 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 /// <summary>
 /// Query where the player wishes to place a BattleShip, and provide input to place one 
 /// </summary>
-void PlacementGrid::QueryBattleShipInput()
+void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 {
 	//The default x and y coordinates on the placement grid
-	//As every ship starts horizontally, this is offset 1 from the right to stop the ship from goinf over the edge of the grid
-	int x = 0;
-	int y = 1;
 	//The constraints that the ship must be contained within to remain on the grid, one for x and one for y
 	//Each one is an array so they can be changed at any point
-	int xConstraint[] = { 0,9 };
-	int yConstraint[] = { 1,8 };
+	int xConstraint[2] = { shipToQuery.GetXConstraints(0), shipToQuery.GetXConstraints(1) };
+	int yConstraint[2] = { shipToQuery.GetYConstraints(0), shipToQuery.GetYConstraints(1) };
+	//As every ship starts horizontally, this is offset from the ship's size in cells to stop the ship from goinf over the edge of the grid
+	int x = 0;
+	int y = yConstraint[0];
 	//Whether the player has rotated the ship veritcally or not
 	bool isVertical = false;
 	//Whether a ship has been placed 
@@ -44,13 +45,13 @@ void PlacementGrid::QueryBattleShipInput()
 		if (isVertical == false)
 		{
 			//Display a pontential ship onto the grid horizontally
-			DisplayPotentialBattleShip(x, y, false);
+			DisplayPotentialBattleShip(x, y, false, shipToQuery);
 		}
 		//If the ship is being placed vertically
 		else
 		{
 			//Display a pontential ship onto the grid vertically
-			DisplayPotentialBattleShip(x, y, true);
+			DisplayPotentialBattleShip(x, y, true, shipToQuery);
 		}
 		//Display the grid in it's current state
 		DisplayGrid();
@@ -120,28 +121,52 @@ void PlacementGrid::QueryBattleShipInput()
 				//If the ship is not rotated vertically
 				if (isVertical == false)
 				{
-					//Check that the cells immediately to the left and right have a value of 2, meaning they are not currently occupied by another ship
-					if (grid[x][y] == 2 && grid[x][y - 1] == 2 && grid[x][y + 1] == 2)
+					bool canPlaceShip = true;
+
+					for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
 					{
-						//Set the cells immediately to the left and right to a value of 1, meaning they are occupied by a ship
-						grid[x][y] = 1;
-						grid[x][y - 1] = 1;
-						grid[x][y + 1] = 1;
+
+						if (grid[x][shipToQuery.ShipSize(y, cell)] != 2)
+						{
+							canPlaceShip = false;
+						}
+					}
+
+					if (canPlaceShip == true)
+					{
+						for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+						{
+
+							grid[x][shipToQuery.ShipSize(y, cell)] = 1;
+						}
+						//A ship has been placed
+						isShipPlaced = true;
 					}
 				}
 				else
 				{
-					//Check that the cells immediately up and down have a value of 2, meaning they are not currently occupied by another ship
-					if (grid[x][y] == 2 && grid[x - 1][y] == 2 && grid[x + 1][y] == 2)
+					bool canPlaceShip = true;
+
+					for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
 					{
-						//Set the cells immediately up and down to a value of 1, meaning they are occupied by a ship
-						grid[x][y] = 1;
-						grid[x - 1][y] = 1;
-						grid[x + 1][y] = 1;
+
+						if (grid[shipToQuery.ShipSize(x, cell)][y] != 2)
+						{
+							canPlaceShip = false;
+						}
+					}
+
+					if (canPlaceShip == true)
+					{
+						for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+						{
+
+							grid[shipToQuery.ShipSize(x, cell)][y] = 1;
+						}
+						//A ship has been placed
+						isShipPlaced = true;
 					}
 				}
-				//A ship has been placed
-				//isShipPlaced = true;
 				isKeyPressed = true;
 			}
 			//If the R key is pressed
@@ -155,21 +180,21 @@ void PlacementGrid::QueryBattleShipInput()
 
 					//If the ship is currently on the very edge of it's x constraints, move it back 1 cell in the opposite direction (which also happens to be the same as equalling it to the yConstraints)
 					//This is to stop the ship from being pushed outside of the grid by rotating it on an edge
-					if (x == xConstraint[0])
+					if (x == xConstraint[0] || x == xConstraint[0] + 1)
 					{
 						x = yConstraint[0];
 					}
-					else if (x == xConstraint[1])
+					else if (x == xConstraint[1] || x == xConstraint[1] - 1)
 					{
 						x = yConstraint[1];
 					}
 
 					//Flip the x and y constraints
-					xConstraint[0] = 1;
-					xConstraint[1] = 8;
+					xConstraint[0] = shipToQuery.GetYConstraints(0);
+					xConstraint[1] = shipToQuery.GetYConstraints(1);
 
-					yConstraint[0] = 0;
-					yConstraint[1] = 9;
+					yConstraint[0] = shipToQuery.GetXConstraints(0);
+					yConstraint[1] = shipToQuery.GetXConstraints(1);
 				}
 				//If the ship is currently rotated vertically
 				else
@@ -179,21 +204,21 @@ void PlacementGrid::QueryBattleShipInput()
 
 					//If the ship is currently on the very edge of it's y constraints, move it back 1 cell in the opposite direction (which also happens to be the same as equalling it to the xConstraints)
 					//This is to stop the ship from being pushed outside of the grid by rotating it on an edge
-					if (y == yConstraint[0])
+					if (y == yConstraint[0] || y == yConstraint[0] + 1)
 					{
-						y = 1;
+						y = xConstraint[0];
 					}
-					else if (y == yConstraint[1])
+					else if (y == yConstraint[1] || y == yConstraint[1] - 1)
 					{
-						y = 8;
+						y = xConstraint[1];
 					}
 
 					//Flip the x and y constraints
-					xConstraint[0] = 0;
-					xConstraint[1] = 9;
+					xConstraint[0] = shipToQuery.GetXConstraints(0);
+					xConstraint[1] = shipToQuery.GetXConstraints(1);
 
-					yConstraint[0] = 1;
-					yConstraint[1] = 8;
+					yConstraint[0] = shipToQuery.GetYConstraints(0);
+					yConstraint[1] = shipToQuery.GetYConstraints(1);
 				}
 				isKeyPressed = true;
 			}
@@ -215,20 +240,25 @@ void PlacementGrid::QueryBattleShipInput()
 	}
 }
 
-void PlacementGrid::DisplayPotentialBattleShip(int x, int y, bool isVerical)
+void PlacementGrid::DisplayPotentialBattleShip(int x, int y, bool isVerical, BattleShip shipToDisplay)
 {
 	ClearPotentialBattleShips();
 	if (isVerical == false)
 	{
-		grid[x][y] = DisplayCellPlacement(x, y);
-		grid[x][y - 1] = DisplayCellPlacement(x, y - 1);
-		grid[x][y + 1] = DisplayCellPlacement(x, y + 1);
+		for (int cell = 0; cell < (shipToDisplay.GetSizeInCells()); cell++)
+		{
+
+			grid[x][shipToDisplay.ShipSize(y, cell)] = DisplayCellPlacement(x, shipToDisplay.ShipSize(y, cell));
+		}
+
 	}
 	if (isVerical == true)
 	{
-		grid[x][y] = DisplayCellPlacement(x, y);
-		grid[x - 1][y] = DisplayCellPlacement(x - 1, y);
-		grid[x + 1][y] = DisplayCellPlacement(x + 1, y);
+		for (int cell = 0; cell < (shipToDisplay.GetSizeInCells()); cell++)
+		{
+
+			grid[shipToDisplay.ShipSize(x, cell)][y] = DisplayCellPlacement(shipToDisplay.ShipSize(x, cell), y);
+		}
 	}
 
 }

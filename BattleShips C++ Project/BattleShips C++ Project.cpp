@@ -1,15 +1,28 @@
 #include <iostream>
 #include "Grid.h"
+#include "BattleShip.h"
 #include "StrikingGrid.h"
 #include "PlacementGrid.h"
 using namespace std;
 
 StrikingGrid playerStrikingGrid;
 PlacementGrid playerPlacementGrid;
+BattleShip destroyer(2, 0, 9, 0, 8);
+BattleShip submarine(3, 0, 9, 1, 8);
+BattleShip cruiser(3, 0, 9, 1, 8);
+BattleShip battleShip(4, 0, 9, 1, 7);
+BattleShip carrier(5, 0, 9, 2, 7);
 
 int main()
 {
-	playerPlacementGrid.QueryBattleShipInput();
+	/*
+	playerPlacementGrid.QueryBattleShipInput(destroyer);
+	playerPlacementGrid.QueryBattleShipInput(submarine);
+	playerPlacementGrid.QueryBattleShipInput(cruiser);
+	playerPlacementGrid.QueryBattleShipInput(battleShip);
+	*/
+	playerPlacementGrid.QueryBattleShipInput(carrier);
+	playerPlacementGrid.DisplayGrid();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
