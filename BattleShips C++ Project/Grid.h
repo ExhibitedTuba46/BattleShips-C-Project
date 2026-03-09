@@ -9,5 +9,7 @@ public: int GetCell(int x, int y);
 public: void SetCell(int x, int y, int value);
 
 public: virtual void DisplayGrid() = 0;
+
+public: virtual void DisplayGridRaw();
 };
 

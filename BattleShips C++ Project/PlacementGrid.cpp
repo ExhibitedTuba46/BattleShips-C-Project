@@ -5,16 +5,18 @@
 #include "BattleShip.h"
 #include <iostream>
 #include <windows.h>
+#include<vector>
 using namespace std;
 
 int PlacementGrid::DisplayCellPlacement(int x, int y)
 {
-	if (grid[x][y] != 1)
+	if (grid[x][y] < 4)
 	{
 		return 2;
 	}
 	else
 	{
+		previousGridValue = grid[x][y];
 		return 3;
 	}
 }
@@ -22,13 +24,14 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 /// <summary>
 /// Query where the player wishes to place a BattleShip, and provide input to place one 
 /// </summary>
-void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
+void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 {
+	BattleShip& shipInQuery = *shipToQuery;
 	//The default x and y coordinates on the placement grid
 	//The constraints that the ship must be contained within to remain on the grid, one for x and one for y
 	//Each one is an array so they can be changed at any point
-	int xConstraint[2] = { shipToQuery.GetXConstraints(0), shipToQuery.GetXConstraints(1) };
-	int yConstraint[2] = { shipToQuery.GetYConstraints(0), shipToQuery.GetYConstraints(1) };
+	int xConstraint[2] = { shipInQuery.GetXConstraints(0), shipInQuery.GetXConstraints(1) };
+	int yConstraint[2] = { shipInQuery.GetYConstraints(0), shipInQuery.GetYConstraints(1) };
 	//As every ship starts horizontally, this is offset from the ship's size in cells to stop the ship from goinf over the edge of the grid
 	int x = 0;
 	int y = yConstraint[0];
@@ -123,10 +126,10 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 				{
 					bool canPlaceShip = true;
 
-					for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+					for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
 					{
 
-						if (grid[x][shipToQuery.ShipSize(y, cell)] != 2)
+						if (grid[x][shipInQuery.ShipSize(y, cell)] != 2)
 						{
 							canPlaceShip = false;
 						}
@@ -134,23 +137,24 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 
 					if (canPlaceShip == true)
 					{
-						for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+						for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
 						{
 
-							grid[x][shipToQuery.ShipSize(y, cell)] = 1;
+							grid[x][shipInQuery.ShipSize(y, cell)] = shipInQuery.GetShipIdentifier();
 						}
 						//A ship has been placed
 						isShipPlaced = true;
+						placedShips.push_back(shipToQuery);
 					}
 				}
 				else
 				{
 					bool canPlaceShip = true;
 
-					for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+					for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
 					{
 
-						if (grid[shipToQuery.ShipSize(x, cell)][y] != 2)
+						if (grid[shipInQuery.ShipSize(x, cell)][y] != 2)
 						{
 							canPlaceShip = false;
 						}
@@ -158,13 +162,14 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 
 					if (canPlaceShip == true)
 					{
-						for (int cell = 0; cell < (shipToQuery.GetSizeInCells()); cell++)
+						for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
 						{
 
-							grid[shipToQuery.ShipSize(x, cell)][y] = 1;
+							grid[shipInQuery.ShipSize(x, cell)][y] = shipInQuery.GetShipIdentifier();
 						}
 						//A ship has been placed
 						isShipPlaced = true;
+						placedShips.push_back(shipToQuery);
 					}
 				}
 				isKeyPressed = true;
@@ -190,11 +195,11 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 					}
 
 					//Flip the x and y constraints
-					xConstraint[0] = shipToQuery.GetYConstraints(0);
-					xConstraint[1] = shipToQuery.GetYConstraints(1);
+					xConstraint[0] = shipInQuery.GetYConstraints(0);
+					xConstraint[1] = shipInQuery.GetYConstraints(1);
 
-					yConstraint[0] = shipToQuery.GetXConstraints(0);
-					yConstraint[1] = shipToQuery.GetXConstraints(1);
+					yConstraint[0] = shipInQuery.GetXConstraints(0);
+					yConstraint[1] = shipInQuery.GetXConstraints(1);
 				}
 				//If the ship is currently rotated vertically
 				else
@@ -214,11 +219,11 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 					}
 
 					//Flip the x and y constraints
-					xConstraint[0] = shipToQuery.GetXConstraints(0);
-					xConstraint[1] = shipToQuery.GetXConstraints(1);
+					xConstraint[0] = shipInQuery.GetXConstraints(0);
+					xConstraint[1] = shipInQuery.GetXConstraints(1);
 
-					yConstraint[0] = shipToQuery.GetYConstraints(0);
-					yConstraint[1] = shipToQuery.GetYConstraints(1);
+					yConstraint[0] = shipInQuery.GetYConstraints(0);
+					yConstraint[1] = shipInQuery.GetYConstraints(1);
 				}
 				isKeyPressed = true;
 			}
@@ -240,24 +245,25 @@ void PlacementGrid::QueryBattleShipInput(BattleShip shipToQuery)
 	}
 }
 
-void PlacementGrid::DisplayPotentialBattleShip(int x, int y, bool isVerical, BattleShip shipToDisplay)
+void PlacementGrid::DisplayPotentialBattleShip(int x, int y, bool isVerical, BattleShip* shipToDisplay)
 {
+	BattleShip& shipInDisplay = *shipToDisplay;
 	ClearPotentialBattleShips();
 	if (isVerical == false)
 	{
-		for (int cell = 0; cell < (shipToDisplay.GetSizeInCells()); cell++)
+		for (int cell = 0; cell < (shipInDisplay.GetSizeInCells()); cell++)
 		{
 
-			grid[x][shipToDisplay.ShipSize(y, cell)] = DisplayCellPlacement(x, shipToDisplay.ShipSize(y, cell));
+			grid[x][shipInDisplay.ShipSize(y, cell)] = DisplayCellPlacement(x, shipInDisplay.ShipSize(y, cell));
 		}
 
 	}
 	if (isVerical == true)
 	{
-		for (int cell = 0; cell < (shipToDisplay.GetSizeInCells()); cell++)
+		for (int cell = 0; cell < (shipInDisplay.GetSizeInCells()); cell++)
 		{
 
-			grid[shipToDisplay.ShipSize(x, cell)][y] = DisplayCellPlacement(shipToDisplay.ShipSize(x, cell), y);
+			grid[shipInDisplay.ShipSize(x, cell)][y] = DisplayCellPlacement(shipInDisplay.ShipSize(x, cell), y);
 		}
 	}
 
@@ -275,14 +281,37 @@ void PlacementGrid::ClearPotentialBattleShips()
 			}
 			else if (grid[row][cell] == 3)
 			{
-				grid[row][cell] = 1;
+				grid[row][cell] = previousGridValue;
 			}
 		}
 	}
 }
 
+int PlacementGrid::QueryHitInput(int x, int y)
+{
+	if (grid[x][y] > 3)
+	{
+		for (BattleShip* shipPointer : placedShips)
+		{
+			BattleShip& ship = *shipPointer;
+			if (ship.GetShipIdentifier() == grid[x][y])
+			{
+				ship.DamageShip();
+			}
+		}
+		grid[x][y] = 1;
+		return 1;
+	}
+	else
+	{
+		grid[x][y] = 2;
+		return 2;
+	}
+}
+
 void PlacementGrid::DisplayGrid()
 {
+	cout << "\033[0m";
 	char rowLetter[10] = { 'A', 'B', 'C', 'D','E', 'F', 'G', 'H', 'I', 'J' };
 	cout << "  0 1 2 3 4 5 6 7 8 9" << endl;
 	for (int row = 0; row < 10; row++)
@@ -293,19 +322,27 @@ void PlacementGrid::DisplayGrid()
 			switch (grid[row][cell])
 			{
 			case 3:
-				cout << "X ";
+				cout << "\033[31mX ";
+				cout << "\033[0m";
 				break;
 			case 2:
-				cout << "O ";
+				cout << "\033[0mO ";
 				break;
 			case 1:
-				cout << "# ";
+				cout << "\033[31mX ";
+				cout << "\033[0m";
+				break;
+			case 0:
+				cout << "\033[36m~ ";
+				cout << "\033[0m";
 				break;
 			default:
-				cout << "~ ";
+				cout << "\033[1;90m# ";
+				cout << "\033[0m";
 				break;
 			}
 		}
 		cout << endl;
 	}
+	cout << endl;
 }

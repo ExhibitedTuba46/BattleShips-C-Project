@@ -12,6 +12,19 @@ void Grid::SetCell(int x, int y, int value)
 	grid[x][y] = value;
 }
 
+void Grid::DisplayGridRaw()
+{
+	for (int row = 0; row < 10; row++)
+	{
+		cout << "  ";
+		for (int cell = 0; cell < 10; cell++)
+		{
+			cout << grid[row][cell] << " ";
+		}
+		cout << endl;
+	}
+}
+
 /*
 Example layout of how this could look 
 

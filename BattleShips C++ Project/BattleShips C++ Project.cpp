@@ -7,21 +7,21 @@ using namespace std;
 
 StrikingGrid playerStrikingGrid;
 PlacementGrid playerPlacementGrid;
-BattleShip destroyer(2, 0, 9, 0, 8);
-BattleShip submarine(3, 0, 9, 1, 8);
-BattleShip cruiser(3, 0, 9, 1, 8);
-BattleShip battleShip(4, 0, 9, 1, 7);
-BattleShip carrier(5, 0, 9, 2, 7);
+BattleShip destroyer(2, 0, 9, 0, 8, 4);
+BattleShip submarine(3, 0, 9, 1, 8, 5);
+BattleShip cruiser(3, 0, 9, 1, 8, 6);
+BattleShip battleShip(4, 0, 9, 1, 7, 7);
+BattleShip carrier(5, 0, 9, 2, 7, 8);
 
 int main()
 {
-	/*
-	playerPlacementGrid.QueryBattleShipInput(destroyer);
-	playerPlacementGrid.QueryBattleShipInput(submarine);
-	playerPlacementGrid.QueryBattleShipInput(cruiser);
-	playerPlacementGrid.QueryBattleShipInput(battleShip);
-	*/
-	playerPlacementGrid.QueryBattleShipInput(carrier);
+	playerPlacementGrid.QueryBattleShipInput(&destroyer);
+	playerPlacementGrid.QueryBattleShipInput(&submarine);
+	playerPlacementGrid.QueryBattleShipInput(&cruiser);
+	playerPlacementGrid.QueryBattleShipInput(&battleShip);
+	playerPlacementGrid.QueryBattleShipInput(&carrier);
+	playerStrikingGrid.QuerySrikeInput(playerPlacementGrid);
+	playerStrikingGrid.DisplayGrid();
 	playerPlacementGrid.DisplayGrid();
 }
 
