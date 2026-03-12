@@ -4,6 +4,8 @@
 #include "Grid.h"
 #include "BattleShip.h"
 #include <iostream>
+//Windows.h is only avialable on Windows PCs, this means that if I wanted this program to be useable on Mac for example, this would need to be replaced
+//However for the purposes of this assignmemt Windows.h works perfectly
 #include <windows.h>
 #include<vector>
 using namespace std;
@@ -21,9 +23,46 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 	}
 }
 
+void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y)
+{
+	BattleShip& shipBeingPlaced = *shipToPlace;
+
+	int xConstraints[2] = { shipBeingPlaced.GetXConstraints(0), shipBeingPlaced.GetXConstraints(1) };
+	int yConstraints[2] = { shipBeingPlaced.GetYConstraints(0), shipBeingPlaced.GetYConstraints(1) };
+	if (x >= xConstraints[0] || x <= xConstraints[1])
+	{
+		if (y >= yConstraints[0] || y <= yConstraints[1])
+		{
+			bool canPlaceShip = true;
+
+			for (int cell = 0; cell < (shipBeingPlaced.GetSizeInCells()); cell++)
+			{
+
+				if (grid[x][shipBeingPlaced.ShipSize(y, cell)] != 2)
+				{
+					canPlaceShip = false;
+				}
+			}
+
+			if (canPlaceShip == true)
+			{
+				for (int cell = 0; cell < (shipBeingPlaced.GetSizeInCells()); cell++)
+				{
+
+					grid[x][shipBeingPlaced.ShipSize(y, cell)] = shipBeingPlaced.GetShipIdentifier();
+				}
+				placedShips.push_back(shipToPlace);
+			}
+		}
+	}
+
+
+}
+
 /// <summary>
-/// Query where the player wishes to place a BattleShip, and provide input to place one 
+/// Query where the player wishes to place a BattleShip, and provide input to place one
 /// </summary>
+/// <param name="shipToQuery">A pointer to the ship that the grid should query.</param>
 void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 {
 	BattleShip& shipInQuery = *shipToQuery;
@@ -44,6 +83,10 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 	//If a ship has not been placed
 	while (isShipPlaced == false)
 	{
+		cout << "Select where you would like to place your " << shipInQuery.GetShipName() << "." << endl;
+		cout << "Use the arrow keys to move the ship around the board. Press 'E' to place your ship and 'R' to rotate it." << endl;
+		cout << endl;
+
 		//If the ship is being placed horizontally
 		if (isVertical == false)
 		{

@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIOpponent.cpp" />
     <ClCompile Include="BattleShip.cpp" />
     <ClCompile Include="BattleShips C++ Project.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="StrikingGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIOpponent.h" />
     <ClInclude Include="BattleShip.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="PlacementGrid.h" />

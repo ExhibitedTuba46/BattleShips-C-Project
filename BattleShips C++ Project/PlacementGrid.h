@@ -19,6 +19,8 @@ private: void DisplayPotentialBattleShip(int x, int y, bool isVertical, BattleSh
 
 public: void QueryBattleShipInput(BattleShip* shipToQuery);
 
+public: void PlaceAIShip(BattleShip* shipToPlace, int x, int y);
+
 public: int QueryHitInput(int x, int y);
 
 private: void ClearPotentialBattleShips();

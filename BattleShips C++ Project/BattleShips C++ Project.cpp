@@ -3,23 +3,29 @@
 #include "BattleShip.h"
 #include "StrikingGrid.h"
 #include "PlacementGrid.h"
+#include "AIOpponent.h"
 using namespace std;
 
 StrikingGrid playerStrikingGrid;
 PlacementGrid playerPlacementGrid;
-BattleShip destroyer(2, 0, 9, 0, 8, 4);
-BattleShip submarine(3, 0, 9, 1, 8, 5);
-BattleShip cruiser(3, 0, 9, 1, 8, 6);
-BattleShip battleShip(4, 0, 9, 1, 7, 7);
-BattleShip carrier(5, 0, 9, 2, 7, 8);
+StrikingGrid aitrikingGrid;
+PlacementGrid aiPlacementGrid;
+AIOpponent opponent;
+BattleShip playerDestroyer(2, 0, 9, 0, 8, 4, "Destroyer");
+BattleShip playerSubmarine(3, 0, 9, 1, 8, 5, "Submarine");
+BattleShip playerCruiser(3, 0, 9, 1, 8, 6 , "Cruiser");
+BattleShip playerBattleShip(4, 0, 9, 1, 7, 7, "BattleShip");
+BattleShip playerCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
 
 int main()
 {
-	playerPlacementGrid.QueryBattleShipInput(&destroyer);
-	playerPlacementGrid.QueryBattleShipInput(&submarine);
-	playerPlacementGrid.QueryBattleShipInput(&cruiser);
-	playerPlacementGrid.QueryBattleShipInput(&battleShip);
-	playerPlacementGrid.QueryBattleShipInput(&carrier);
+	opponent.ChooseRandomStartingCell(aiPlacementGrid);
+	playerPlacementGrid.QueryBattleShipInput(&playerDestroyer);
+	playerPlacementGrid.QueryBattleShipInput(&playerSubmarine);
+	playerPlacementGrid.QueryBattleShipInput(&playerCruiser);
+	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
+	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
+
 	playerStrikingGrid.QuerySrikeInput(playerPlacementGrid);
 	playerStrikingGrid.DisplayGrid();
 	playerPlacementGrid.DisplayGrid();

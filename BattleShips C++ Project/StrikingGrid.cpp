@@ -54,8 +54,13 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid gridToStrike)
 	bool hasStruck = false;
 
 	bool isKeyPressed = false;
+
+	cout << "Choose a place on the board to strike." << endl;
+	cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
+	cout << endl;
+
 	grid[x][y] = 3;
-	while (hasStruck == false)
+	while (true)
 	{
 		DisplayGrid();
 		gridToStrike.DisplayGrid();
@@ -121,7 +126,14 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid gridToStrike)
 				if (grid[x][y] == 3)
 				{
 					grid[x][y] = gridToStrike.QueryHitInput(x, y);
+					if (grid[x][y] != 1)
+					{
+						system("cls");
+						cout << "You missed!" << endl;
+						cout << endl;
+					}
 					isKeyPressed = true;
+					hasStruck = true;
 				}
 			}
 		}
@@ -168,7 +180,17 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid gridToStrike)
 		{
 			grid[x][y] = 5;
 		}
-		system("cls");
 
+		if (hasStruck == false)
+		{
+			system("cls");
+			cout << "Choose a place on the board to strike." << endl;
+			cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
+			cout << endl;
+		}
+		else
+		{
+			hasStruck = false;
+		}
 	}
 }
