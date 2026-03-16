@@ -17,14 +17,27 @@ BattleShip playerCruiser(3, 0, 9, 1, 8, 6 , "Cruiser");
 BattleShip playerBattleShip(4, 0, 9, 1, 7, 7, "BattleShip");
 BattleShip playerCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
 
+BattleShip opponentDestroyer(2, 0, 9, 0, 8, 4, "Destroyer");
+BattleShip opponentSubmarine(3, 0, 9, 1, 8, 5, "Submarine");
+BattleShip opponentCruiser(3, 0, 9, 1, 8, 6, "Cruiser");
+BattleShip opponentBattleShip(4, 0, 9, 1, 7, 7, "BattleShip");
+BattleShip opponentCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
+
 int main()
 {
-	opponent.ChooseRandomStartingCell(aiPlacementGrid);
+	bool rotation = opponent.GetRandomRotation();
+	playerPlacementGrid.PlaceAIShip(&opponentDestroyer, 
+		opponent.ChooseRandomStartingCellX(aiPlacementGrid, opponentDestroyer, rotation),
+		opponent.ChooseRandomStartingCellY(aiPlacementGrid, opponentDestroyer, rotation), 
+		rotation);
+
+	/*
 	playerPlacementGrid.QueryBattleShipInput(&playerDestroyer);
 	playerPlacementGrid.QueryBattleShipInput(&playerSubmarine);
 	playerPlacementGrid.QueryBattleShipInput(&playerCruiser);
 	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
 	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
+	*/
 
 	playerStrikingGrid.QuerySrikeInput(playerPlacementGrid);
 	playerStrikingGrid.DisplayGrid();

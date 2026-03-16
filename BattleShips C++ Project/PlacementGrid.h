@@ -19,9 +19,11 @@ private: void DisplayPotentialBattleShip(int x, int y, bool isVertical, BattleSh
 
 public: void QueryBattleShipInput(BattleShip* shipToQuery);
 
-public: void PlaceAIShip(BattleShip* shipToPlace, int x, int y);
+public: void PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVertical);
 
 public: int QueryHitInput(int x, int y);
 
 private: void ClearPotentialBattleShips();
+
+private: bool PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y);
 };

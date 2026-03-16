@@ -23,35 +23,102 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 	}
 }
 
-void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y)
+bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y)
+{
+	BattleShip shipToPlace = *shipBeingPlaced;
+	if (isVertical == false)
+	{
+		bool canPlaceShip = true;
+
+		for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
+		{
+
+			if (grid[x][shipToPlace.ShipSize(y, cell)] != 2 && grid[x][shipToPlace.ShipSize(y, cell)] != 0)
+			{
+				canPlaceShip = false;
+			}
+		}
+
+		if (canPlaceShip == true)
+		{
+			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
+			{
+				grid[x][shipToPlace.ShipSize(y, cell)] = shipToPlace.GetShipIdentifier();
+			}
+			//A ship has been placed
+			placedShips.push_back(shipBeingPlaced);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		bool canPlaceShip = true;
+
+		for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
+		{
+
+			if (grid[shipToPlace.ShipSize(x, cell)][y] != 2 && grid[shipToPlace.ShipSize(x, cell)][y] != 0)
+			{
+				canPlaceShip = false;
+			}
+		}
+
+		if (canPlaceShip == true)
+		{
+			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
+			{
+				grid[shipToPlace.ShipSize(x, cell)][y] = shipToPlace.GetShipIdentifier();
+			}
+			//A ship has been placed
+			placedShips.push_back(shipBeingPlaced);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
+void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVertical)
 {
 	BattleShip& shipBeingPlaced = *shipToPlace;
 
-	int xConstraints[2] = { shipBeingPlaced.GetXConstraints(0), shipBeingPlaced.GetXConstraints(1) };
-	int yConstraints[2] = { shipBeingPlaced.GetYConstraints(0), shipBeingPlaced.GetYConstraints(1) };
+	int xConstraints[2] = { 0 , 10 };
+	int yConstraints[2] = { 0, 10 };
+
+	if (isVertical == false)
+	{
+		xConstraints[0] = shipBeingPlaced.GetXConstraints(0);
+		xConstraints[1] = shipBeingPlaced.GetXConstraints(1);
+
+		yConstraints[0] = shipBeingPlaced.GetYConstraints(0);
+		yConstraints[1] = shipBeingPlaced.GetYConstraints(1);
+	}
+	else 
+	{
+		xConstraints[0] = shipBeingPlaced.GetYConstraints(0);
+		xConstraints[1] = shipBeingPlaced.GetYConstraints(1);
+
+		yConstraints[0] = shipBeingPlaced.GetXConstraints(0);
+		yConstraints[1] = shipBeingPlaced.GetXConstraints(1);
+	}
+	
 	if (x >= xConstraints[0] || x <= xConstraints[1])
 	{
 		if (y >= yConstraints[0] || y <= yConstraints[1])
 		{
-			bool canPlaceShip = true;
-
-			for (int cell = 0; cell < (shipBeingPlaced.GetSizeInCells()); cell++)
+			if (isVertical == false)
 			{
-
-				if (grid[x][shipBeingPlaced.ShipSize(y, cell)] != 2)
-				{
-					canPlaceShip = false;
-				}
+				PlaceBattleShip(false, shipToPlace, x, y);
 			}
-
-			if (canPlaceShip == true)
+			else
 			{
-				for (int cell = 0; cell < (shipBeingPlaced.GetSizeInCells()); cell++)
-				{
-
-					grid[x][shipBeingPlaced.ShipSize(y, cell)] = shipBeingPlaced.GetShipIdentifier();
-				}
-				placedShips.push_back(shipToPlace);
+				PlaceBattleShip(true, shipToPlace, x, y);
 			}
 		}
 	}
@@ -167,53 +234,11 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 				//If the ship is not rotated vertically
 				if (isVertical == false)
 				{
-					bool canPlaceShip = true;
-
-					for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
-					{
-
-						if (grid[x][shipInQuery.ShipSize(y, cell)] != 2)
-						{
-							canPlaceShip = false;
-						}
-					}
-
-					if (canPlaceShip == true)
-					{
-						for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
-						{
-
-							grid[x][shipInQuery.ShipSize(y, cell)] = shipInQuery.GetShipIdentifier();
-						}
-						//A ship has been placed
-						isShipPlaced = true;
-						placedShips.push_back(shipToQuery);
-					}
+					isShipPlaced = PlaceBattleShip(false, shipToQuery, x, y);
 				}
 				else
 				{
-					bool canPlaceShip = true;
-
-					for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
-					{
-
-						if (grid[shipInQuery.ShipSize(x, cell)][y] != 2)
-						{
-							canPlaceShip = false;
-						}
-					}
-
-					if (canPlaceShip == true)
-					{
-						for (int cell = 0; cell < (shipInQuery.GetSizeInCells()); cell++)
-						{
-
-							grid[shipInQuery.ShipSize(x, cell)][y] = shipInQuery.GetShipIdentifier();
-						}
-						//A ship has been placed
-						isShipPlaced = true;
-						placedShips.push_back(shipToQuery);
-					}
+					isShipPlaced = PlaceBattleShip(true, shipToQuery, x, y);
 				}
 				isKeyPressed = true;
 			}
