@@ -10,7 +10,7 @@ public: int ChooseRandomStartingCellY(PlacementGrid gridToPlaceOn, BattleShip sh
 
 protected: int GetRandomValue(int min, int max);
 
-protected: int GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical);
+public: int GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical, bool returnXAxis);
 
 protected: void CopyGrid(PlacementGrid gridToCopy);
 

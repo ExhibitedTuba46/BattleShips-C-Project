@@ -35,12 +35,12 @@ int AIOpponent::ChooseRandomStartingCellX(PlacementGrid gridToPlaceOn, BattleShi
 	if (isVertical == false)
 	{
 		min = shipToPlace.GetXConstraints(0);
-		max = shipToPlace.GetXConstraints(1) + 1;
+		max = shipToPlace.GetXConstraints(1);
 	}
 	else
 	{
 		min = shipToPlace.GetYConstraints(0);
-	    max = shipToPlace.GetYConstraints(1) + 1;
+		max = shipToPlace.GetYConstraints(1);
 	}
 
 	int randomX = GetRandomValue(min, max);
@@ -56,21 +56,21 @@ int AIOpponent::ChooseRandomStartingCellY(PlacementGrid gridToPlaceOn, BattleShi
 	if (isVertical == false)
 	{
 		min = shipToPlace.GetYConstraints(0);
-		max = shipToPlace.GetYConstraints(1) + 1;
+		max = shipToPlace.GetYConstraints(1);
 	}
 	else
 	{
 		min = shipToPlace.GetXConstraints(0);
-		max = shipToPlace.GetXConstraints(1) + 1;
+		max = shipToPlace.GetXConstraints(1);
 	}
-	
+
 
 	int randomY = GetRandomValue(min, max);
 
 	return randomY;
 }
 
-int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical)
+int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical, bool returnXAxis)
 {
 	CopyGrid(gridToPlaceOn);
 
@@ -85,7 +85,7 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 		yConstraints[0] = shipToPlace.GetYConstraints(0);
 		yConstraints[1] = shipToPlace.GetYConstraints(1);
 	}
-	else 
+	else
 	{
 		xConstraints[0] = shipToPlace.GetYConstraints(0);
 		xConstraints[1] = shipToPlace.GetYConstraints(1);
@@ -94,19 +94,104 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 		yConstraints[1] = shipToPlace.GetXConstraints(1);
 	}
 
-	int bestCell;
+	int bestCell[] = { xConstraints[0], yConstraints[0] };
+	int bestCellSpace = 0;
 	for (int row = 0; row < 10; row++)
 	{
-		if (yConstraints[0] < row && row < yConstraints[1])
+		if (xConstraints[0] < row && row < xConstraints[1])
 		{
 			for (int cell = 0; cell < 10; cell++)
 			{
-				if (xConstraints[0] < cell && cell < xConstraints[1])
+				if (yConstraints[0] < cell && cell < yConstraints[1])
 				{
+					if (copiedGrid[row][cell] == 0)
+					{
+						int distance = 1;
+
+						int spaceAround = 0;
+						bool hasHitObstacle = false;
+						while (hasHitObstacle == false)
+						{
+							for (int dir = 0; dir < 8; dir++)
+							{
+								int x = row;
+								int y = cell;
+
+								switch (dir)
+								{
+								case 7:
+									x -= distance;
+									y += distance;
+									break;
+								case 6:
+									x -= distance;
+									y -= distance;
+									break;
+								case 5:
+									x += distance;
+									y -= distance;
+									break;
+								case 4:
+									x += distance;
+									y += distance;
+									break;
+								case 3:
+									y -= distance;
+									break;
+								case 2:
+									x -= distance;
+									break;
+								case 1:
+									y += distance;
+									break;
+								case 0:
+									x += distance;
+									break;
+								default:
+									break;
+								}
+								if ((y != yConstraints[0] && y != yConstraints[1])
+									&& (x != xConstraints[0] && x != xConstraints[1]))
+								{
+									if (copiedGrid[x][y] == 0)
+									{
+										spaceAround++;
+									}
+									else
+									{
+										hasHitObstacle = true;
+									}
+								}
+								else
+								{
+									hasHitObstacle = true;
+								}
+							}
+							distance++;
+
+						}
+						if (spaceAround > bestCellSpace)
+						{
+							bestCellSpace = spaceAround;
+							bestCell[0] = row;
+							bestCell[1] = cell;
+						}
+					}
 
 				}
 			}
 		}
+	}
+
+	cout << bestCell[0] << " " << bestCell[1] << endl;
+
+	if (returnXAxis == true)
+	{
+		return bestCell[0];
+	}
+	else
+	{
+		return bestCell[1];
 	}
 }
 

@@ -25,11 +25,29 @@ BattleShip opponentCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
 
 int main()
 {
+	
 	bool rotation = opponent.GetRandomRotation();
-	playerPlacementGrid.PlaceAIShip(&opponentDestroyer, 
+	aiPlacementGrid.PlaceAIShip(&opponentDestroyer, 
 		opponent.ChooseRandomStartingCellX(aiPlacementGrid, opponentDestroyer, rotation),
 		opponent.ChooseRandomStartingCellY(aiPlacementGrid, opponentDestroyer, rotation), 
 		rotation);
+	rotation = opponent.GetRandomRotation();
+	aiPlacementGrid.PlaceAIShip(&opponentSubmarine,
+		opponent.GetBestCell(aiPlacementGrid, opponentSubmarine, rotation, true),
+		opponent.GetBestCell(aiPlacementGrid, opponentSubmarine, rotation, false),
+		rotation);
+	rotation = opponent.GetRandomRotation();
+	aiPlacementGrid.PlaceAIShip(&opponentCruiser,
+		opponent.GetBestCell(aiPlacementGrid, opponentCruiser, rotation, true),
+		opponent.GetBestCell(aiPlacementGrid, opponentCruiser, rotation, false),
+		rotation);
+	rotation = opponent.GetRandomRotation();
+	aiPlacementGrid.PlaceAIShip(&opponentBattleShip,
+		opponent.GetBestCell(aiPlacementGrid, opponentBattleShip, rotation, true),
+		opponent.GetBestCell(aiPlacementGrid, opponentBattleShip, rotation, false),
+		rotation);
+
+		
 
 	/*
 	playerPlacementGrid.QueryBattleShipInput(&playerDestroyer);
@@ -38,10 +56,8 @@ int main()
 	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
 	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
 	*/
-
-	playerStrikingGrid.QuerySrikeInput(playerPlacementGrid);
-	playerStrikingGrid.DisplayGrid();
-	playerPlacementGrid.DisplayGrid();
+	
+	playerStrikingGrid.QuerySrikeInput(aiPlacementGrid);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
