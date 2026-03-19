@@ -93,7 +93,26 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 		yConstraints[0] = shipToPlace.GetXConstraints(0);
 		yConstraints[1] = shipToPlace.GetXConstraints(1);
 	}
+	int partitions[5][4];
+	int min = 0;
+	int max = 9;
 
+	int partitionY = GetRandomValue(min, max);
+
+	partitions[0][0] = min;
+	partitions[0][1] = min;
+	partitions[0][2] = max;
+	partitions[0][3] = partitionY - 1;
+
+	partitions[0][0] = min;
+	partitions[0][1] = partitionY + 1;
+	partitions[0][2] = max;
+	partitions[0][3] = max;
+
+	
+		
+	/*
+	* DO NOT USE
 	int bestCell[] = { xConstraints[0], yConstraints[0] };
 	int bestCellSpace = 0;
 	for (int row = 0; row < 10; row++)
@@ -193,6 +212,7 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 	{
 		return bestCell[1];
 	}
+	*/
 }
 
 void AIOpponent::CopyGrid(PlacementGrid gridToCopy)

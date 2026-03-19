@@ -31,23 +31,6 @@ int main()
 		opponent.ChooseRandomStartingCellX(aiPlacementGrid, opponentDestroyer, rotation),
 		opponent.ChooseRandomStartingCellY(aiPlacementGrid, opponentDestroyer, rotation), 
 		rotation);
-	rotation = opponent.GetRandomRotation();
-	aiPlacementGrid.PlaceAIShip(&opponentSubmarine,
-		opponent.GetBestCell(aiPlacementGrid, opponentSubmarine, rotation, true),
-		opponent.GetBestCell(aiPlacementGrid, opponentSubmarine, rotation, false),
-		rotation);
-	rotation = opponent.GetRandomRotation();
-	aiPlacementGrid.PlaceAIShip(&opponentCruiser,
-		opponent.GetBestCell(aiPlacementGrid, opponentCruiser, rotation, true),
-		opponent.GetBestCell(aiPlacementGrid, opponentCruiser, rotation, false),
-		rotation);
-	rotation = opponent.GetRandomRotation();
-	aiPlacementGrid.PlaceAIShip(&opponentBattleShip,
-		opponent.GetBestCell(aiPlacementGrid, opponentBattleShip, rotation, true),
-		opponent.GetBestCell(aiPlacementGrid, opponentBattleShip, rotation, false),
-		rotation);
-
-		
 
 	/*
 	playerPlacementGrid.QueryBattleShipInput(&playerDestroyer);
