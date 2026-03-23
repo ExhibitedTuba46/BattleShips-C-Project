@@ -27,47 +27,68 @@ bool AIOpponent::GetRandomRotation()
 	}
 }
 
-int AIOpponent::ChooseRandomStartingCellX(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical)
+auto AIOpponent::ChooseRandomCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical)
 {
-	int min;
-	int max;
+	CopyGrid(gridToPlaceOn);
+
+	int minX;
+	int maxX;
+
+	int minY;
+	int maxY;
 
 	if (isVertical == false)
 	{
-		min = shipToPlace.GetXConstraints(0);
-		max = shipToPlace.GetXConstraints(1);
+		minX = shipToPlace.GetXConstraints(0);
+		maxX = shipToPlace.GetXConstraints(1);
+
+		minY = shipToPlace.GetYConstraints(0);
+		maxY = shipToPlace.GetYConstraints(1);
 	}
 	else
 	{
-		min = shipToPlace.GetYConstraints(0);
-		max = shipToPlace.GetYConstraints(1);
+		minX = shipToPlace.GetYConstraints(0);
+		maxX = shipToPlace.GetYConstraints(1);
+
+		minY = shipToPlace.GetXConstraints(0);
+		maxY = shipToPlace.GetXConstraints(1);
 	}
 
-	int randomX = GetRandomValue(min, max);
+	bool isCellValid = false;
 
-	return randomX;
-}
+	int randomX;
+	int randomY;
 
-int AIOpponent::ChooseRandomStartingCellY(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical)
-{
-	int min;
-	int max;
-
-	if (isVertical == false)
+	while (false)
 	{
-		min = shipToPlace.GetYConstraints(0);
-		max = shipToPlace.GetYConstraints(1);
+		randomX = GetRandomValue(minX, maxX);
+		randomY = GetRandomValue(minY, maxY);
+
+		for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
+		{
+			if (isVertical == false)
+			{
+				if (copiedGrid[randomX][shipToPlace.ShipSize(randomY, cell)] != 2 && copiedGrid[randomX][shipToPlace.ShipSize(randomY, cell)] != 0)
+				{
+					isCellValid = true;
+				}
+			}
+			else
+			{
+				if (copiedGrid[shipToPlace.ShipSize(randomX, cell)][randomY] != 2 && copiedGrid[shipToPlace.ShipSize(randomX, cell)][randomY] != 0)
+				{
+					isCellValid = true;
+				}
+			}
+		}
 	}
-	else
+
+	struct randomCell
 	{
-		min = shipToPlace.GetXConstraints(0);
-		max = shipToPlace.GetXConstraints(1);
-	}
-
-
-	int randomY = GetRandomValue(min, max);
-
-	return randomY;
+		int x;
+		int y;
+	};
+	return randomCell{ randomX, randomY };
 }
 
 int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical, bool returnXAxis)
@@ -93,23 +114,7 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 		yConstraints[0] = shipToPlace.GetXConstraints(0);
 		yConstraints[1] = shipToPlace.GetXConstraints(1);
 	}
-	int partitions[5][4];
-	int min = 0;
-	int max = 9;
 
-	int partitionY = GetRandomValue(min, max);
-
-	partitions[0][0] = min;
-	partitions[0][1] = min;
-	partitions[0][2] = max;
-	partitions[0][3] = partitionY - 1;
-
-	partitions[0][0] = min;
-	partitions[0][1] = partitionY + 1;
-	partitions[0][2] = max;
-	partitions[0][3] = max;
-
-	
 		
 	/*
 	* DO NOT USE
@@ -213,6 +218,7 @@ int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace,
 		return bestCell[1];
 	}
 	*/
+return 0;
 }
 
 void AIOpponent::CopyGrid(PlacementGrid gridToCopy)

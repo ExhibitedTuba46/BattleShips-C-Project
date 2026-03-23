@@ -27,11 +27,8 @@ int main()
 {
 	
 	bool rotation = opponent.GetRandomRotation();
-	aiPlacementGrid.PlaceAIShip(&opponentDestroyer, 
-		opponent.ChooseRandomStartingCellX(aiPlacementGrid, opponentDestroyer, rotation),
-		opponent.ChooseRandomStartingCellY(aiPlacementGrid, opponentDestroyer, rotation), 
-		rotation);
-
+	aiPlacementGrid.PlaceAIShip(&opponentDestroyer, shipPlacement.x, shipPlacement.y, rotation);
+	
 	/*
 	playerPlacementGrid.QueryBattleShipInput(&playerDestroyer);
 	playerPlacementGrid.QueryBattleShipInput(&playerSubmarine);
