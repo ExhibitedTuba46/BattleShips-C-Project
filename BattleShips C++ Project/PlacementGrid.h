@@ -25,5 +25,5 @@ public: int QueryHitInput(int x, int y);
 
 private: void ClearPotentialBattleShips();
 
-private: bool PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y);
+private: bool PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y, bool isPlayer);
 };

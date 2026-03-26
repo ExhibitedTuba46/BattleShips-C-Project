@@ -23,7 +23,7 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 	}
 }
 
-bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y)
+bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y, bool isPlayer)
 {
 	BattleShip shipToPlace = *shipBeingPlaced;
 	if (isVertical == false)
@@ -39,7 +39,7 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 			}
 		}
 
-		if (canPlaceShip == true)
+		if (canPlaceShip == true || isPlayer == false)
 		{
 			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 			{
@@ -67,7 +67,7 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 			}
 		}
 
-		if (canPlaceShip == true)
+		if (canPlaceShip == true || isPlayer == false)
 		{
 			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 			{
@@ -88,42 +88,14 @@ void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVe
 {
 	BattleShip& shipBeingPlaced = *shipToPlace;
 
-	int xConstraints[2] = { 0 , 10 };
-	int yConstraints[2] = { 0, 10 };
-
 	if (isVertical == false)
 	{
-		xConstraints[0] = shipBeingPlaced.GetXConstraints(0);
-		xConstraints[1] = shipBeingPlaced.GetXConstraints(1);
-
-		yConstraints[0] = shipBeingPlaced.GetYConstraints(0);
-		yConstraints[1] = shipBeingPlaced.GetYConstraints(1);
+		PlaceBattleShip(false, shipToPlace, x, y, false);
 	}
-	else 
+	else
 	{
-		xConstraints[0] = shipBeingPlaced.GetYConstraints(0);
-		xConstraints[1] = shipBeingPlaced.GetYConstraints(1);
-
-		yConstraints[0] = shipBeingPlaced.GetXConstraints(0);
-		yConstraints[1] = shipBeingPlaced.GetXConstraints(1);
+		PlaceBattleShip(true, shipToPlace, x, y, false);
 	}
-	
-	if (x >= xConstraints[0] || x <= xConstraints[1])
-	{
-		if (y >= yConstraints[0] || y <= yConstraints[1])
-		{
-			if (isVertical == false)
-			{
-				PlaceBattleShip(false, shipToPlace, x, y);
-			}
-			else
-			{
-				PlaceBattleShip(true, shipToPlace, x, y);
-			}
-		}
-	}
-
-
 }
 
 /// <summary>
@@ -234,11 +206,11 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 				//If the ship is not rotated vertically
 				if (isVertical == false)
 				{
-					isShipPlaced = PlaceBattleShip(false, shipToQuery, x, y);
+					isShipPlaced = PlaceBattleShip(false, shipToQuery, x, y, true);
 				}
 				else
 				{
-					isShipPlaced = PlaceBattleShip(true, shipToQuery, x, y);
+					isShipPlaced = PlaceBattleShip(true, shipToQuery, x, y, true);
 				}
 				isKeyPressed = true;
 			}

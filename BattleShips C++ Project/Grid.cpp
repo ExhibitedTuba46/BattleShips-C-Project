@@ -12,6 +12,10 @@ void Grid::SetCell(int x, int y, int value)
 	grid[x][y] = value;
 }
 
+void Grid::DisplayGrid() 
+{
+}
+
 void Grid::DisplayGridRaw()
 {
 	for (int row = 0; row < 10; row++)
