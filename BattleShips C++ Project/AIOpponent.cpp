@@ -1,6 +1,7 @@
-#include "AIOpponent.h"
+#include "AIopponent.h"
 #include <iostream>
 #include <random>
+#include <vector>
 #include "BattleShip.h"
 #include "PlacementGrid.h"
 #include "StrikingGrid.h"
@@ -46,13 +47,13 @@ int AIOpponent::SetHeatMapCell(int x, int y, int xOffset, int yOffset)
 	}
 	else if (neighbourCell == 8)
 	{
-		return 1;
+		return -1;
 	}
-	else if (neighbourCell > 3)
+	else if (neighbourCell > 2)
 	{
 		return neighbourCell - 1;
 	}
-	else if (neighbourCell < 3)
+	else if (neighbourCell < 2)
 	{
 		return neighbourCell + 1;
 	}
@@ -74,9 +75,12 @@ void AIOpponent::GenerateHeatMap(StrikingGrid gridToStrike)
 				heatMap[row][cell] = 8;
 			}
 
-			if (heatMap[row][cell] != 8 && heatMap[row][cell] != 9)
+			if (heatMap[row][cell] < 8)
 			{
-				int highestValue = 0;
+				int neighbour1 = 0;
+				int neighbour2 = 0;
+				int neighbour3 = 0;
+				int neighbour4 = 0;
 
 				for (int dir = 0; dir < 4; dir++)
 				{
@@ -85,41 +89,25 @@ void AIOpponent::GenerateHeatMap(StrikingGrid gridToStrike)
 					case 0:
 						if (row != 0)
 						{
-							int neighbour = SetHeatMapCell(row, cell, -1, 0);
-							if (neighbour > highestValue)
-							{
-								highestValue = neighbour;
-							}
+							neighbour1 = SetHeatMapCell(row, cell, -1, 0);
 						}
 						break;
 					case 1:
 						if (cell != 9)
 						{
-							int neighbour = SetHeatMapCell(row, cell, 0, 1);
-							if (neighbour > highestValue)
-							{
-								highestValue = neighbour;
-							}
+							neighbour2 = SetHeatMapCell(row, cell, 0, 1);
 						}
 						break;
 					case 2:
 						if (row != 9)
 						{
-							int neighbour = SetHeatMapCell(row, cell, 1, 0);
-							if (neighbour > highestValue)
-							{
-								highestValue = neighbour;
-							}
+							neighbour3 = SetHeatMapCell(row, cell, 1, 0);
 						}
 						break;
 					case 3:
 						if (cell != 0)
 						{
-							int neighbour = SetHeatMapCell(row, cell, 0, -1);
-							if (neighbour > highestValue)
-							{
-								highestValue = neighbour;
-							}
+							neighbour4 = SetHeatMapCell(row, cell, 0, -1);
 						}
 						break;
 
@@ -127,7 +115,9 @@ void AIOpponent::GenerateHeatMap(StrikingGrid gridToStrike)
 						break;
 					}
 				}
-				heatMap[row][cell] = highestValue;
+				int totalValue = neighbour1 + neighbour2 + neighbour3 + neighbour4;
+				totalValue = totalValue / 3;
+				heatMap[row][cell] = totalValue;
 			}
 		}
 	}
@@ -212,134 +202,41 @@ pair<int, int> AIOpponent::ChooseRandomCell(PlacementGrid gridToPlaceOn, BattleS
 	return chosenCell;
 }
 
-int AIOpponent::GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical, bool returnXAxis)
+pair<int, int> AIOpponent::GetBestCell()
 {
-	CopyGrid(gridToPlaceOn);
+	int highestValue = 0;
 
-	int xConstraints[2] = { 0 , 10 };
-	int yConstraints[2] = { 0, 10 };
-
-	if (isVertical == false)
-	{
-		xConstraints[0] = shipToPlace.GetXConstraints(0);
-		xConstraints[1] = shipToPlace.GetXConstraints(1);
-
-		yConstraints[0] = shipToPlace.GetYConstraints(0);
-		yConstraints[1] = shipToPlace.GetYConstraints(1);
-	}
-	else
-	{
-		xConstraints[0] = shipToPlace.GetYConstraints(0);
-		xConstraints[1] = shipToPlace.GetYConstraints(1);
-
-		yConstraints[0] = shipToPlace.GetXConstraints(0);
-		yConstraints[1] = shipToPlace.GetXConstraints(1);
-	}
-
-
-	/*
-	* DO NOT USE
-	int bestCell[] = { xConstraints[0], yConstraints[0] };
-	int bestCellSpace = 0;
 	for (int row = 0; row < 10; row++)
 	{
-		if (xConstraints[0] < row && row < xConstraints[1])
+		for (int cell = 0; cell < 10; cell++)
 		{
-			for (int cell = 0; cell < 10; cell++)
+			if (heatMap[row][cell] < 8)
 			{
-				if (yConstraints[0] < cell && cell < yConstraints[1])
+				if (heatMap[row][cell] > highestValue)
 				{
-					if (copiedGrid[row][cell] == 0)
-					{
-						int distance = 1;
-
-						int spaceAround = 0;
-						bool hasHitObstacle = false;
-						while (hasHitObstacle == false)
-						{
-							for (int dir = 0; dir < 8; dir++)
-							{
-								int x = row;
-								int y = cell;
-
-								switch (dir)
-								{
-								case 7:
-									x -= distance;
-									y += distance;
-									break;
-								case 6:
-									x -= distance;
-									y -= distance;
-									break;
-								case 5:
-									x += distance;
-									y -= distance;
-									break;
-								case 4:
-									x += distance;
-									y += distance;
-									break;
-								case 3:
-									y -= distance;
-									break;
-								case 2:
-									x -= distance;
-									break;
-								case 1:
-									y += distance;
-									break;
-								case 0:
-									x += distance;
-									break;
-								default:
-									break;
-								}
-								if ((y != yConstraints[0] && y != yConstraints[1])
-									&& (x != xConstraints[0] && x != xConstraints[1]))
-								{
-									if (copiedGrid[x][y] == 0)
-									{
-										spaceAround++;
-									}
-									else
-									{
-										hasHitObstacle = true;
-									}
-								}
-								else
-								{
-									hasHitObstacle = true;
-								}
-							}
-							distance++;
-
-						}
-						if (spaceAround > bestCellSpace)
-						{
-							bestCellSpace = spaceAround;
-							bestCell[0] = row;
-							bestCell[1] = cell;
-						}
-					}
-
+					highestValue = heatMap[row][cell];
 				}
 			}
 		}
 	}
 
-	cout << bestCell[0] << " " << bestCell[1] << endl;
+	vector<pair<int, int>> highestCells;
 
-	if (returnXAxis == true)
+	for (int row = 0; row < 10; row++)
 	{
-		return bestCell[0];
+		for (int cell = 0; cell < 10; cell++)
+		{
+			if (heatMap[row][cell] == highestValue)
+			{
+				highestCells.push_back({ row, cell });
+			}
+		}
 	}
-	else
-	{
-		return bestCell[1];
-	}
-	*/
-	return 0;
+
+	cout << highestValue;
+	pair<int, int> chosenCell = highestCells[GetRandomValue(0, highestCells.size() - 1)];
+
+	return chosenCell;
 }
 
 void AIOpponent::CopyGrid(Grid gridToCopy)

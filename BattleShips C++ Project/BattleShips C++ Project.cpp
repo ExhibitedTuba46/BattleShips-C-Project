@@ -25,7 +25,6 @@ BattleShip opponentCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
 
 int main()
 {
-	/*
 	bool rotation = opponent.GetRandomRotation();
 	pair<int, int> shipPlacement = opponent.ChooseRandomCell(aiPlacementGrid, opponentDestroyer, rotation);
 	aiPlacementGrid.PlaceAIShip(&opponentDestroyer, shipPlacement.first, shipPlacement.second, rotation);
@@ -52,12 +51,22 @@ int main()
 	playerPlacementGrid.QueryBattleShipInput(&playerCruiser);
 	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
 	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
-	*/
 	
 	//playerStrikingGrid.QuerySrikeInput(aiPlacementGrid);
 
-	opponent.UpdateHeatMap(aitrikingGrid);
-	opponent.DisplayHeatMap();
+	/*
+	for (int i = 0; i < 10; i++)
+	{
+		opponent.UpdateHeatMap(aitrikingGrid);
+		pair<int, int> chosenCell = opponent.GetBestCell();
+		aitrikingGrid.AIStrike(playerPlacementGrid, chosenCell);
+	}
+	*/
+
+	playerStrikingGrid.QuerySrikeInput(aiPlacementGrid);
+	
+	aiPlacementGrid.DisplayGrid();
+	playerPlacementGrid.DisplayGrid();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

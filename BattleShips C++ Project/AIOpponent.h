@@ -20,7 +20,7 @@ public: void DisplayHeatMap();
 
 protected: int GetRandomValue(int min, int max);
 
-public: int GetBestCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical, bool returnXAxis);
+public: pair<int, int> GetBestCell();
 
 protected: void CopyGrid(Grid gridToCopy);
 
