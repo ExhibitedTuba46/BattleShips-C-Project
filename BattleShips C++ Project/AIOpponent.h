@@ -8,6 +8,8 @@ protected: int copiedGrid[10][10];
 
 protected: int heatMap[10][10];
 
+protected: int nonOptimalHits = 0;
+
 public: pair<int, int> ChooseRandomCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical);
 
 public: void UpdateHeatMap(StrikingGrid gridToStrike);

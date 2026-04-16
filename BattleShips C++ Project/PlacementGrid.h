@@ -11,6 +11,8 @@ private: int previousGridValue = 0;
 
 private: vector<BattleShip*> placedShips;
 
+public: int GetShipsRemaining();
+
 public: void DisplayGrid() override;
 
 private: int DisplayCellPlacement(int x, int y);

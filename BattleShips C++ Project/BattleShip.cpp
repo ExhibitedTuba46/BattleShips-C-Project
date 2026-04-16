@@ -13,18 +13,37 @@ int BattleShip::GetShipIdentifier() { return shipIdentifier; }
 
 string BattleShip::GetShipName() { return shipName; }
 
+bool BattleShip::GetShipStatus() { return hasSunk; }
+
 void BattleShip::DamageShip() {
 	if (timesHit < (sizeInCells - 1))
 	{
 		timesHit++;
 		system("cls");
-		cout << "You hit an enemy ship!" << endl;
+		if (isAI == true)
+		{
+			cout << "You hit an enemy ship!" << endl;
+		}
+		else
+		{
+			cout << "The AI has hit one of your ships!" << endl;
+		}
 		cout << endl;
 	}
 	else
 	{
 		system("cls");
-		cout << "You sunk my " << shipName << "!" << endl;
+		if (isAI == true)
+		{
+			cout << "You sunk the AI's " << shipName << "!" << endl;
+		}
+		else
+		{
+			cout << "The AI has sunk your " << shipName << "!" << endl;
+		}
+
+		hasSunk = true;
+
 		cout << endl;
 	}
 }
@@ -52,8 +71,10 @@ int BattleShip::ShipSize(int x, int cellNumber)
 	}
 }
 
-BattleShip::BattleShip(int sizeOfShip, int xConstraint1, int xConstraint2, int yConstraint1, int yConstraint2, int identifier, string name)
+BattleShip::BattleShip(int sizeOfShip, int xConstraint1, int xConstraint2, int yConstraint1, int yConstraint2, int identifier, string name, bool _isAI)
 {
+	isAI = _isAI;
+
 	sizeInCells = sizeOfShip;
 	shipIdentifier = identifier;
 

@@ -84,6 +84,20 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 	}
 }
 
+int PlacementGrid::GetShipsRemaining()
+{
+	int shipsRemaining = 0;
+	for (int ship = 0; ship < placedShips.size(); ship++)
+	{
+		if (placedShips[ship]->GetShipStatus() == false)
+		{
+			shipsRemaining++;
+		}
+	}
+
+	return shipsRemaining;
+}
+
 void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVertical)
 {
 	BattleShip& shipBeingPlaced = *shipToPlace;

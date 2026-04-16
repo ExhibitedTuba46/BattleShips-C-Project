@@ -46,35 +46,41 @@ void StrikingGrid::DisplayGrid()
 	cout << endl;
 }
 
-void StrikingGrid::AIStrike(PlacementGrid gridToStrike, pair<int, int> chosenCell)
+void StrikingGrid::AIStrike(PlacementGrid* pointerToStrike, pair<int, int> chosenCell)
 {
+	PlacementGrid& gridToStrike = *pointerToStrike;
 	grid[chosenCell.first][chosenCell.second] = gridToStrike.QueryHitInput(chosenCell.first, chosenCell.second);
 	if (grid[chosenCell.first][chosenCell.second] != 1)
 	{
 		system("cls");
-		cout << "You missed!" << endl;
+		cout << "The AI has missed!" << endl;
 		cout << endl;
 	}
 }
 
-void StrikingGrid::QuerySrikeInput(PlacementGrid gridToStrike)
+void StrikingGrid::QuerySrikeInput(PlacementGrid* pointerToStrike, PlacementGrid playerPlacementGrid)
 {
-	int x = 0;
-	int y = 0;
+	PlacementGrid& gridToStrike = *pointerToStrike;
 
 	bool hasStruck = false;
 
 	bool isKeyPressed = false;
 
+	cout << "Your turn:" << endl;
 	cout << "Choose a place on the board to strike." << endl;
 	cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
+	cout << "AI ships remaining: " << gridToStrike.GetShipsRemaining() << endl;
 	cout << endl;
 
-	grid[x][y] = 3;
+	if (grid[x][y] == 0)
+	{
+		grid[x][y] = 3;
+	}
 	while (hasStruck == false)
 	{
 		DisplayGrid();
-		gridToStrike.DisplayGrid();
+		cout << "Your ships:" << endl;
+		playerPlacementGrid.DisplayGrid();
 		//Whilst an input key has not yet been pressed
 		while (isKeyPressed == false)
 		{
@@ -195,8 +201,10 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid gridToStrike)
 		if (hasStruck == false)
 		{
 			system("cls");
+			cout << "Your turn:" << endl;
 			cout << "Choose a place on the board to strike." << endl;
 			cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
+			cout << "AI ships remaining: " << gridToStrike.GetShipsRemaining() << endl;
 			cout << endl;
 		}
 	}

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Windows.h>
 #include "Grid.h"
 #include "BattleShip.h"
 #include "StrikingGrid.h"
@@ -11,20 +12,22 @@ PlacementGrid playerPlacementGrid;
 StrikingGrid aitrikingGrid;
 PlacementGrid aiPlacementGrid;
 AIOpponent opponent;
-BattleShip playerDestroyer(2, 0, 9, 0, 8, 4, "Destroyer");
-BattleShip playerSubmarine(3, 0, 9, 1, 8, 5, "Submarine");
-BattleShip playerCruiser(3, 0, 9, 1, 8, 6 , "Cruiser");
-BattleShip playerBattleShip(4, 0, 9, 1, 7, 7, "BattleShip");
-BattleShip playerCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
+BattleShip playerDestroyer(2, 0, 9, 0, 8, 4, "Destroyer", false);
+BattleShip playerSubmarine(3, 0, 9, 1, 8, 5, "Submarine", false);
+BattleShip playerCruiser(3, 0, 9, 1, 8, 6 , "Cruiser", false);
+BattleShip playerBattleShip(4, 0, 9, 1, 7, 7, "BattleShip", false);
+BattleShip playerCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier", false);
 
-BattleShip opponentDestroyer(2, 0, 9, 0, 8, 4, "Destroyer");
-BattleShip opponentSubmarine(3, 0, 9, 1, 8, 5, "Submarine");
-BattleShip opponentCruiser(3, 0, 9, 1, 8, 6, "Cruiser");
-BattleShip opponentBattleShip(4, 0, 9, 1, 7, 7, "BattleShip");
-BattleShip opponentCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier");
+BattleShip opponentDestroyer(2, 0, 9, 0, 8, 4, "Destroyer", true);
+BattleShip opponentSubmarine(3, 0, 9, 1, 8, 5, "Submarine", true);
+BattleShip opponentCruiser(3, 0, 9, 1, 8, 6, "Cruiser", true);
+BattleShip opponentBattleShip(4, 0, 9, 1, 7, 7, "BattleShip", true);
+BattleShip opponentCarrier(5, 0, 9, 2, 7, 8, "Aircraft Carrier", true);
 
 int main()
 {
+	bool hasGameFinished = false;
+
 	bool rotation = opponent.GetRandomRotation();
 	pair<int, int> shipPlacement = opponent.ChooseRandomCell(aiPlacementGrid, opponentDestroyer, rotation);
 	aiPlacementGrid.PlaceAIShip(&opponentDestroyer, shipPlacement.first, shipPlacement.second, rotation);
@@ -52,21 +55,41 @@ int main()
 	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
 	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
 	
-	//playerStrikingGrid.QuerySrikeInput(aiPlacementGrid);
 
-	/*
-	for (int i = 0; i < 10; i++)
+	while (hasGameFinished == false)
 	{
+		playerStrikingGrid.QuerySrikeInput(&aiPlacementGrid, playerPlacementGrid);
+		if (aiPlacementGrid.GetShipsRemaining() == 0)
+		{
+			hasGameFinished = true;
+			system("cls");
+			cout << "You win!";
+			break;
+		}
+		
+		Sleep(1000);
+
+		cout << "AI's turn:" << endl;
+
+		Sleep(1000);
+
+		cout << "AI is thinking..." << endl;
+
+		Sleep(1000);
+
 		opponent.UpdateHeatMap(aitrikingGrid);
 		pair<int, int> chosenCell = opponent.GetBestCell();
-		aitrikingGrid.AIStrike(playerPlacementGrid, chosenCell);
-	}
-	*/
+		aitrikingGrid.AIStrike(&playerPlacementGrid, chosenCell);
 
-	playerStrikingGrid.QuerySrikeInput(aiPlacementGrid);
-	
-	aiPlacementGrid.DisplayGrid();
-	playerPlacementGrid.DisplayGrid();
+		if (playerPlacementGrid.GetShipsRemaining() == 0)
+		{
+			hasGameFinished = true;
+			system("cls");
+			cout << "The Ai wins!";
+			break;
+		}
+	}
+	Sleep(100000);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

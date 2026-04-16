@@ -206,6 +206,8 @@ pair<int, int> AIOpponent::GetBestCell()
 {
 	int highestValue = 0;
 
+	int lowestValue = 7;
+
 	for (int row = 0; row < 10; row++)
 	{
 		for (int cell = 0; cell < 10; cell++)
@@ -216,11 +218,18 @@ pair<int, int> AIOpponent::GetBestCell()
 				{
 					highestValue = heatMap[row][cell];
 				}
+
+				if (heatMap[row][cell] < lowestValue)
+				{
+					lowestValue = heatMap[row][cell];
+				}
 			}
 		}
 	}
 
 	vector<pair<int, int>> highestCells;
+
+	vector<pair<int, int>> lowestCells;
 
 	for (int row = 0; row < 10; row++)
 	{
@@ -230,13 +239,39 @@ pair<int, int> AIOpponent::GetBestCell()
 			{
 				highestCells.push_back({ row, cell });
 			}
+
+			if (heatMap[row][cell] == lowestValue)
+			{
+				lowestCells.push_back({ row, cell });
+			}
 		}
 	}
 
-	cout << highestValue;
-	pair<int, int> chosenCell = highestCells[GetRandomValue(0, highestCells.size() - 1)];
+	int randomChoice;
 
-	return chosenCell;
+	if (nonOptimalHits < 3)
+	{
+		randomChoice = GetRandomValue(0, 6);
+	}
+	else
+	{
+		randomChoice = 1;
+	}
+
+	if (randomChoice < 6)
+	{
+		pair<int, int> chosenCell = highestCells[GetRandomValue(0, highestCells.size() - 1)];
+		nonOptimalHits = 0;
+		return chosenCell;
+	}
+	else
+	{
+		pair<int, int> chosenCell = lowestCells[GetRandomValue(0, lowestCells.size() - 1)];
+		nonOptimalHits += 1;
+		return chosenCell;
+	}
+
+
 }
 
 void AIOpponent::CopyGrid(Grid gridToCopy)
