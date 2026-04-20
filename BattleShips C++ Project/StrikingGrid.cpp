@@ -66,21 +66,38 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid* pointerToStrike, PlacementGrid
 
 	bool isKeyPressed = false;
 
-	cout << "Your turn:" << endl;
-	cout << "Choose a place on the board to strike." << endl;
-	cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
-	cout << "AI ships remaining: " << gridToStrike.GetShipsRemaining() << endl;
-	cout << endl;
-
 	if (grid[x][y] == 0)
 	{
 		grid[x][y] = 3;
 	}
 	while (hasStruck == false)
 	{
+		cout << "Your turn:" << endl;
+		cout << "Choose a place on the AI's board to strike." << endl;
+		cout << "Use the \033[33marrow keys\033[0m to aim around the board. Press '\033[33mE\033[0m' to strike." << endl;
+		cout << "AI ships remaining: " << gridToStrike.GetShipsRemaining() << endl;
+		cout << endl;
+
+		cout << "AI's board:" << endl;
 		DisplayGrid();
 		cout << "Your ships:" << endl;
 		playerPlacementGrid.DisplayGrid();
+
+		cout << "BOARD LEGEND:" << endl;
+		cout << endl;
+		cout << "Generic:" << endl;
+		cout << "Hit - \033[31mX\033[0m" << endl;
+		cout << "Miss - O" << endl;
+		cout << "Empty cell - \033[36m~\033[0m" << endl;
+		cout << endl;
+		cout << "Striking board:" << endl;
+		cout << "Striking crosshair - \033[33m+\033[0m" << endl;
+		cout << "Crosshair over hit - \033[33mX\033[0m" << endl;
+		cout << "Crosshair over miss - \033[33mO\033[0m" << endl;
+		cout << endl;
+		cout << "Ship view:" << endl;
+		cout << "Placed ship - \033[1;90m#\033[0m" << endl;
+
 		//Whilst an input key has not yet been pressed
 		while (isKeyPressed == false)
 		{
@@ -201,11 +218,6 @@ void StrikingGrid::QuerySrikeInput(PlacementGrid* pointerToStrike, PlacementGrid
 		if (hasStruck == false)
 		{
 			system("cls");
-			cout << "Your turn:" << endl;
-			cout << "Choose a place on the board to strike." << endl;
-			cout << "Use the arrow keys to aim around the board. Press 'E' to strike." << endl;
-			cout << "AI ships remaining: " << gridToStrike.GetShipsRemaining() << endl;
-			cout << endl;
 		}
 	}
 }

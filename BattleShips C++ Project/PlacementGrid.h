@@ -7,7 +7,17 @@ using namespace std;
 
 class PlacementGrid : public Grid
 {
-private: int previousGridValue = 0;
+private: int realGridValues[10][10] = {
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0} };
 
 private: vector<BattleShip*> placedShips;
 

@@ -18,7 +18,6 @@ int PlacementGrid::DisplayCellPlacement(int x, int y)
 	}
 	else
 	{
-		previousGridValue = grid[x][y];
 		return 3;
 	}
 }
@@ -44,6 +43,7 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 			{
 				grid[x][shipToPlace.ShipSize(y, cell)] = shipToPlace.GetShipIdentifier();
+				realGridValues[x][shipToPlace.ShipSize(y, cell)] = shipToPlace.GetShipIdentifier();
 			}
 			//A ship has been placed
 			placedShips.push_back(shipBeingPlaced);
@@ -72,6 +72,7 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 			{
 				grid[shipToPlace.ShipSize(x, cell)][y] = shipToPlace.GetShipIdentifier();
+				realGridValues[shipToPlace.ShipSize(x, cell)][y] = shipToPlace.GetShipIdentifier();
 			}
 			//A ship has been placed
 			placedShips.push_back(shipBeingPlaced);
@@ -136,8 +137,9 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 	//If a ship has not been placed
 	while (isShipPlaced == false)
 	{
+		cout << "Placement phase:" << endl;
 		cout << "Select where you would like to place your " << shipInQuery.GetShipName() << "." << endl;
-		cout << "Use the arrow keys to move the ship around the board. Press 'E' to place your ship and 'R' to rotate it." << endl;
+		cout << "Use the \033[33marrow keys\033[0m to move the ship around the board. Press '\033[33mE\033[0m' to place your ship and '\033[33mR\033[0m' to rotate it." << endl;
 		cout << endl;
 
 		//If the ship is being placed horizontally
@@ -153,7 +155,16 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 			DisplayPotentialBattleShip(x, y, true, shipToQuery);
 		}
 		//Display the grid in it's current state
+		cout << "Your board:" << endl;
 		DisplayGrid();
+
+		cout << "BOARD LEGEND:" << endl;
+		cout << endl;
+		cout << "Valid ship placement - O" << endl;
+		cout << "Invalid ship placement - \033[31mX\033[0m" << endl;
+		cout << "Empty cell - \033[36m~\033[0m" << endl;
+		cout << "Placed ship - \033[1;90m#\033[0m" << endl;
+
 		//Whilst an input key has not yet been pressed
 		while (isKeyPressed == false)
 		{
@@ -335,7 +346,7 @@ void PlacementGrid::ClearPotentialBattleShips()
 			}
 			else if (grid[row][cell] == 3)
 			{
-				grid[row][cell] = previousGridValue;
+				grid[row][cell] = realGridValues[row][cell];
 			}
 		}
 	}
