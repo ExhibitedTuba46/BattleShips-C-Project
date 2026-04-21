@@ -4,27 +4,30 @@
 #include "StrikingGrid.h"
 class AIOpponent
 {
-protected: int copiedGrid[10][10];
+	//A variable to store a duplicate of the AI's striking grid that it can build a heatmap from
+private: int copiedGrid[10][10];
 
-protected: int heatMap[10][10];
+		 //A variable to store the built heatmap
+private: int heatMap[10][10];
 
-protected: int nonOptimalHits = 0;
+		 //The number of times the AI has rolled to hit a lower heatmap value
+private: int nonOptimalHits = 0;
 
 public: pair<int, int> ChooseRandomCell(PlacementGrid gridToPlaceOn, BattleShip shipToPlace, bool isVertical);
 
 public: void UpdateHeatMap(StrikingGrid gridToStrike);
 
-protected: void GenerateHeatMap(StrikingGrid gridToStrike);
+private: void GenerateHeatMap(StrikingGrid gridToStrike);
 
-protected: int SetHeatMapCell(int x, int y, int xOffset, int yOffset);
+private: int SetHeatMapCell(int x, int y, int xOffset, int yOffset);
 
 public: void DisplayHeatMap();
 
-protected: int GetRandomValue(int min, int max);
+private: int GetRandomValue(int min, int max);
 
 public: pair<int, int> GetBestCell();
 
-protected: void CopyGrid(Grid gridToCopy);
+private: void CopyGrid(Grid gridToCopy);
 
 public: bool GetRandomRotation();
 };

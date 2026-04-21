@@ -8,18 +8,31 @@
 #include "Grid.h"
 using namespace std;
 
+/// <summary>
+/// Get a random value between the given minimum and maximum values
+/// </summary>
+/// <param name="min">The minimum value to choose from</param>
+/// <param name="max">The maximum value to choose from</param>
+/// <returns></returns>
 int AIOpponent::GetRandomValue(int min, int max)
 {
+	//Generate a random number using random distribution
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> distrib(min, max);
 	return distrib(gen);
 }
 
+/// <summary>
+/// Get a random rotation between horizontal and vertical for placing ships autonomously
+/// </summary>
+/// <returns></returns>
 bool AIOpponent::GetRandomRotation()
 {
+	
 	int rotation = GetRandomValue(0, 2);
 
+	//If the random roll chose 0 then return false (horizontal) or true (vertical)
 	if (rotation == 0)
 	{
 		return false;
@@ -30,8 +43,14 @@ bool AIOpponent::GetRandomRotation()
 	}
 }
 
+/// <summary>
+/// Update the AI's targeting heatmap
+/// </summary>
+/// <param name="gridToStrike">The striking grid the AI should be updating from</param>
 void AIOpponent::UpdateHeatMap(StrikingGrid gridToStrike)
 {
+	//The generate heatmap function is called multiple times
+	//It must be called more than once to have a full coverage of the grid but I found that around 10 times gives the best results
 	for (int i = 0; i < 10; i++)
 	{
 		GenerateHeatMap(gridToStrike);
