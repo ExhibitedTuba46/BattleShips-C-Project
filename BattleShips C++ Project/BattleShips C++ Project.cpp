@@ -197,7 +197,7 @@ int main()
 	bool isExitKeyPressed = false;
 	while (isExitKeyPressed == false)
 	{
-		//When the player presses escape
+		//When the player presses the escape key
 		if (GetKeyState(VK_ESCAPE) & 0x8000)
 		{
 			//Exit the program
