@@ -1,6 +1,7 @@
 #pragma once
 class Grid
 {
+	//The grid that all children of this class will use
 protected: int grid[10][10] = { 
 	{0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0}, 

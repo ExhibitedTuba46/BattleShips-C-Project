@@ -5,6 +5,7 @@
 class AIOpponent
 {
 	//A variable to store a duplicate of the AI's striking grid that it can build a heatmap from
+	//Or to store the AI's placement grid to place ships on
 private: int copiedGrid[10][10];
 
 		 //A variable to store the built heatmap
@@ -19,13 +20,13 @@ public: void UpdateHeatMap(StrikingGrid gridToStrike);
 
 private: void GenerateHeatMap(StrikingGrid gridToStrike);
 
-private: int SetHeatMapCell(int x, int y, int xOffset, int yOffset);
+private: int CheckHeatMapNeighbours(int x, int y, int xOffset, int yOffset);
 
 public: void DisplayHeatMap();
 
 private: int GetRandomValue(int min, int max);
 
-public: pair<int, int> GetBestCell();
+public: pair<int, int> TargetHeatmapCell();
 
 private: void CopyGrid(Grid gridToCopy);
 

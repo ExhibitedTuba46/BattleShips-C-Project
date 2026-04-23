@@ -105,6 +105,12 @@ int main()
 	playerPlacementGrid.QueryBattleShipInput(&playerBattleShip);
 	playerPlacementGrid.QueryBattleShipInput(&playerCarrier);
 
+	system("cls");
+	cout << "AI placement phase:" << endl;
+	Sleep(1000);
+	cout << "AI is placing ships..." << endl;
+	Sleep(1000);
+	system("cls");
 
 	while (hasGameFinished == false)
 	{
@@ -136,7 +142,7 @@ int main()
 		Sleep(1000);
 
 		opponent.UpdateHeatMap(aitrikingGrid);
-		pair<int, int> chosenCell = opponent.GetBestCell();
+		pair<int, int> chosenCell = opponent.TargetHeatmapCell();
 		aitrikingGrid.AIStrike(&playerPlacementGrid, chosenCell);
 
 		if (playerPlacementGrid.GetShipsRemaining() == 0)

@@ -10,50 +10,77 @@
 #include<vector>
 using namespace std;
 
+/// <summary>
+/// Determine how to display a potential cell that a ship could be placed on
+/// </summary>
+/// <param name="x">The X coordinate</param>
+/// <param name="y">The Y coordinate</param>
+/// <returns></returns>
 int PlacementGrid::DisplayCellPlacement(int x, int y)
 {
+	//If the cell is less than 4, then it has not already been placed on
 	if (grid[x][y] < 4)
 	{
+		//Display a valid ship placement symbol on the cell
 		return 2;
 	}
+	//If this cell is already in use 
 	else
 	{
+		//Display and invalid ship placement symbol on the cell
 		return 3;
 	}
 }
 
+/// <summary>
+/// Place a ship at a given position on the grid
+/// </summary>
+/// <param name="isVertical">Whether this ship is vertical</param>
+/// <param name="shipBeingPlaced">The ship to place on the grid</param>
+/// <param name="x">The X coordinate</param>
+/// <param name="y">The Y coordinate</param>
+/// <param name="isPlayer">Whether this function was called by the player</param>
+/// <returns></returns>
 bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced, int x, int y, bool isPlayer)
 {
 	BattleShip shipToPlace = *shipBeingPlaced;
+	//If this ship is horizontal
 	if (isVertical == false)
 	{
 		bool canPlaceShip = true;
 
+		//Check each cell this ship contains to check it can be placed here
 		for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 		{
-
+			//If the cell is not empty or currently displaying a valid ship position
 			if (grid[x][shipToPlace.ShipSize(y, cell)] != 2 && grid[x][shipToPlace.ShipSize(y, cell)] != 0)
 			{
+				//Mark this location as not valid
 				canPlaceShip = false;
 			}
 		}
 
+		//If this location is valid
+		//If this was placed by AI it can be assumed the AI has already worked out if it can be placed, therefore it can be placed regardless
 		if (canPlaceShip == true || isPlayer == false)
 		{
+			//For each cell in the ship set the corresponding cell on both grids to that ship's identifier
 			for (int cell = 0; cell < (shipToPlace.GetSizeInCells()); cell++)
 			{
 				grid[x][shipToPlace.ShipSize(y, cell)] = shipToPlace.GetShipIdentifier();
 				realGridValues[x][shipToPlace.ShipSize(y, cell)] = shipToPlace.GetShipIdentifier();
 			}
-			//A ship has been placed
+			//Add this ship to the list of placed ships
 			placedShips.push_back(shipBeingPlaced);
 			return true;
 		}
+		//If this position in not valid
 		else
 		{
 			return false;
 		}
 	}
+	//If this ship is vertical then repeat the same steps but on the Y axis instead
 	else
 	{
 		bool canPlaceShip = true;
@@ -74,7 +101,6 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 				grid[shipToPlace.ShipSize(x, cell)][y] = shipToPlace.GetShipIdentifier();
 				realGridValues[shipToPlace.ShipSize(x, cell)][y] = shipToPlace.GetShipIdentifier();
 			}
-			//A ship has been placed
 			placedShips.push_back(shipBeingPlaced);
 			return true;
 		}
@@ -85,13 +111,19 @@ bool PlacementGrid::PlaceBattleShip(bool isVertical, BattleShip* shipBeingPlaced
 	}
 }
 
+/// <summary>
+/// Return the number of ships remaining on the grid that have not been sunk
+/// </summary>
+/// <returns></returns>
 int PlacementGrid::GetShipsRemaining()
 {
 	int shipsRemaining = 0;
+	//For each ship in placed ships check whehther it has been sunk
 	for (int ship = 0; ship < placedShips.size(); ship++)
 	{
 		if (placedShips[ship]->GetShipStatus() == false)
 		{
+			//If it has not increase the number of ships not sunk
 			shipsRemaining++;
 		}
 	}
@@ -99,14 +131,23 @@ int PlacementGrid::GetShipsRemaining()
 	return shipsRemaining;
 }
 
+/// <summary>
+/// Place a battleship autonamously from an AI
+/// </summary>
+/// <param name="shipToPlace">The ship the function should place</param>
+/// <param name="x">The X coordinate</param>
+/// <param name="y">The Y coordinate</param>
+/// <param name="isVertical">Whether the ship is vertical or horizontal</param>
 void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVertical)
 {
 	BattleShip& shipBeingPlaced = *shipToPlace;
 
+	//If the ship is horizontal place it along the X axis
 	if (isVertical == false)
 	{
 		PlaceBattleShip(false, shipToPlace, x, y, false);
 	}
+	//If not place it along the Y axis
 	else
 	{
 		PlaceBattleShip(true, shipToPlace, x, y, false);
@@ -120,12 +161,11 @@ void PlacementGrid::PlaceAIShip(BattleShip* shipToPlace, int x, int y, bool isVe
 void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 {
 	BattleShip& shipInQuery = *shipToQuery;
-	//The default x and y coordinates on the placement grid
 	//The constraints that the ship must be contained within to remain on the grid, one for x and one for y
 	//Each one is an array so they can be changed at any point
 	int xConstraint[2] = { shipInQuery.GetXConstraints(0), shipInQuery.GetXConstraints(1) };
 	int yConstraint[2] = { shipInQuery.GetYConstraints(0), shipInQuery.GetYConstraints(1) };
-	//As every ship starts horizontally, this is offset from the ship's size in cells to stop the ship from goinf over the edge of the grid
+	//As every ship starts horizontally, this is offset from the ship's size in cells to stop the ship from going over the edge of the grid
 	int x = 0;
 	int y = yConstraint[0];
 	//Whether the player has rotated the ship veritcally or not
@@ -137,6 +177,7 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 	//If a ship has not been placed
 	while (isShipPlaced == false)
 	{
+		//Display to the player that they should place a ship, and inform them of the inputs required to do so
 		cout << "Placement phase:" << endl;
 		cout << "Select where you would like to place your " << shipInQuery.GetShipName() << "." << endl;
 		cout << "Use the \033[33marrow keys\033[0m to move the ship around the board. Press '\033[33mE\033[0m' to place your ship and '\033[33mR\033[0m' to rotate it." << endl;
@@ -158,6 +199,7 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 		cout << "Your board:" << endl;
 		DisplayGrid();
 
+		//Inform the player of what each symbol on the grid means, so they can understand what is happening
 		cout << "BOARD LEGEND:" << endl;
 		cout << endl;
 		cout << "Valid ship placement - O" << endl;
@@ -310,40 +352,56 @@ void PlacementGrid::QueryBattleShipInput(BattleShip* shipToQuery)
 	}
 }
 
+/// <summary>
+/// Determine how to display a potential ship placement
+/// </summary>
+/// <param name="x">The x coordinate of the ship</param>
+/// <param name="y">The y coordinate of the ship</param>
+/// <param name="isVerical">Whether this ship is vertical</param>
+/// <param name="shipToDisplay">The ship to display on the grid</param>
 void PlacementGrid::DisplayPotentialBattleShip(int x, int y, bool isVerical, BattleShip* shipToDisplay)
 {
 	BattleShip& shipInDisplay = *shipToDisplay;
+	//Reset the grid
 	ClearPotentialBattleShips();
+	//If the ship is horizontal
 	if (isVerical == false)
 	{
+		//For each cell in the potential ship 
 		for (int cell = 0; cell < (shipInDisplay.GetSizeInCells()); cell++)
 		{
-
+			//Determine how to display each cell on the grid
 			grid[x][shipInDisplay.ShipSize(y, cell)] = DisplayCellPlacement(x, shipInDisplay.ShipSize(y, cell));
 		}
 
 	}
+	//If the ship is vertical repeat but on the Y axis
 	if (isVerical == true)
 	{
 		for (int cell = 0; cell < (shipInDisplay.GetSizeInCells()); cell++)
 		{
-
 			grid[shipInDisplay.ShipSize(x, cell)][y] = DisplayCellPlacement(shipInDisplay.ShipSize(x, cell), y);
 		}
 	}
 
 }
 
+/// <summary>
+/// Reset the grid and remove any displays for potential battleships
+/// </summary>
 void PlacementGrid::ClearPotentialBattleShips()
 {
 	for (int row = 0; row < 10; row++)
 	{
 		for (int cell = 0; cell < 10; cell++)
 		{
+			//If this cell is marked as a potential battleship position reset it to be empty
 			if (grid[row][cell] == 2)
 			{
 				grid[row][cell] = 0;
 			}
+			//If this cell is marked as an invalid battleship position then reset it to the identifier of the ship that is placed here on the realGridValues coordinate
+			//This means that the ship will still be placed in the same place on both grids with the same identifier rather than being reset when this function is called
 			else if (grid[row][cell] == 3)
 			{
 				grid[row][cell] = realGridValues[row][cell];
@@ -352,55 +410,78 @@ void PlacementGrid::ClearPotentialBattleShips()
 	}
 }
 
+/// <summary>
+/// Query whether the given coordinate would be a hit or miss
+/// </summary>
+/// <param name="x">The X coordinate</param>
+/// <param name="y">The Y coordinate</param>
+/// <returns></returns>
 int PlacementGrid::QueryHitInput(int x, int y)
 {
+	//If this cell is over 3 then this is a hit
 	if (grid[x][y] > 3)
 	{
 		for (BattleShip* shipPointer : placedShips)
 		{
+			//Find which ship has the identifier of the current cell and damage it
 			BattleShip& ship = *shipPointer;
 			if (ship.GetShipIdentifier() == grid[x][y])
 			{
 				ship.DamageShip();
 			}
 		}
+		//Set the current cell as a hit and return a hit 
 		grid[x][y] = 1;
 		return 1;
 	}
+	//If it less or equal to 3 then this is a miss
 	else
 	{
+		//Set the current cell as a miss and return a miss
 		grid[x][y] = 2;
 		return 2;
 	}
 }
 
+/// <summary>
+/// Display the grid but mask the real values with corresponding symbols
+/// </summary>
 void PlacementGrid::DisplayGrid()
 {
 	cout << "\033[0m";
+	//This array of characters will allow the function to dislay the letter that each row grid corresponds to
 	char rowLetter[10] = { 'A', 'B', 'C', 'D','E', 'F', 'G', 'H', 'I', 'J' };
+	//Display the number that each column corresponds to
 	cout << "  0 1 2 3 4 5 6 7 8 9" << endl;
 	for (int row = 0; row < 10; row++)
 	{
+		//Display the letter for this row
 		cout << rowLetter[row] << " ";
 		for (int cell = 0; cell < 10; cell++)
 		{
 			switch (grid[row][cell])
 			{
+				//If this cell is marked as 3 then it is temporarily displayed as a red X to show it is an invalid ship position
+				//This is separate from a hit which is also marked as a red X, but these two are never used at the same time
 			case 3:
 				cout << "\033[31mX ";
 				cout << "\033[0m";
 				break;
+				//If this is cell is either a miss or a valid position for a ship to be used then display a white O
 			case 2:
 				cout << "\033[0mO ";
 				break;
+				//If this cell is a hit then display a red X
 			case 1:
 				cout << "\033[31mX ";
 				cout << "\033[0m";
 				break;
+				//If this cell is empty then display a blue ~ to imitate the ocean
 			case 0:
 				cout << "\033[36m~ ";
 				cout << "\033[0m";
 				break;
+				//If this cell has a ship placed on it (value is higher or equal to 4), display a grey #
 			default:
 				cout << "\033[1;90m# ";
 				cout << "\033[0m";
