@@ -3,6 +3,7 @@
 #include "PlacementGrid.h"
 class StrikingGrid : public Grid
 {
+	//The coordinates of the previously struck cell
 private: int x = 0;
 private: int y = 0;
 
